@@ -5,16 +5,11 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
 
-import javax.swing.JOptionPane;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -26,7 +21,6 @@ import backendkurssi.pelivalikko.domain.AmmattiRepository;
 import backendkurssi.pelivalikko.domain.Hahmo;
 import backendkurssi.pelivalikko.domain.HahmoRepository;
 import backendkurssi.pelivalikko.domain.PelaajaRepository;
-import io.micrometer.common.util.StringUtils;
 import jakarta.validation.Valid;
 
 @Controller
@@ -40,6 +34,7 @@ public class HahmoController {
 
 	private Random random = new Random();
 
+	// Tarkistaa että onko hahmo muuttunut. Tarvitaan, jotta tiedetään että pitääkö muutoksesta ilmoittaa vai ei.
 	private boolean hahmoMuuttunut(Hahmo vanhaHahmo, Hahmo uusiHahmo) {
 		return !Objects.equals(vanhaHahmo.getNimi(), uusiHahmo.getNimi())
 				|| !Objects.equals(vanhaHahmo.getIka(), uusiHahmo.getIka())
@@ -47,6 +42,7 @@ public class HahmoController {
 				|| !Objects.equals(vanhaHahmo.getAmmatti(), uusiHahmo.getAmmatti());
 	}
 
+	// Generoi satunnaisen nimen, joka voidaan asettaa hahmolle, kun hahmo luodaan.
 	private String generoiSatunnainenNimi() {
 		String[] nimet = { "Guillermo", "Hildegard", "Mustaparta", "Ansgarius", "Saga" };
 		String satunnainenNimi = nimet[random.nextInt(nimet.length)];
@@ -86,9 +82,11 @@ public class HahmoController {
 		String muuttuneenNimi = "";
 		Hahmo vanhaHahmo = repository.findById(id).get();
 
+		// Testaa että onko hahmon tiedot muuttuneet. Jos ei, niin paluu takaisin sivulle, ilman tallentamista ja ilmoitusta muutoksesta.
 		if (!hahmoMuuttunut(vanhaHahmo, uusiHahmo)) {
 			return "redirect:../muuta";
 		}
+		// Hahmo id:llä 1 on päähahmo, jonka nimeä ei voi muuttaa. Jos muutettavan hahmon id on 1, niin nimi ei muutu.
 		if (id.equals(1L)) {
 			muuttuneenNimi = prepository.findById(id).get().getPelaajanimi();
 		} else {
@@ -116,6 +114,7 @@ public class HahmoController {
 		return "identiteetti";
 	}
 
+	// Sivulla on linkit restpäätteisiin.
 	@RequestMapping(value = { "/restsivu" })
 	public String tietosivu() {
 		return "restsivu";

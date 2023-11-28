@@ -13,6 +13,7 @@ import jakarta.validation.constraints.Size;
 @Entity
 public class Hahmo {
 	@Id
+	@NotNull
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
 	private String nimi;
