@@ -1,0 +1,37 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title>Tietoja</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<link type="text/css" rel="stylesheet" href="/css/muotoilu.css" th:href="@{/css/muotoilu.css}" />
+</head>
+
+<body>
+	<div class="pohja">
+		<nav style="display: flex; flex-direction: row; justify-content: space-between;">
+			<div class="metagame">
+				<div>
+					<form th:action="@{/logout}" method="post">
+						<input type="submit" value="Uusi peli" /><br>
+						<input type="submit" value="Lataa peli" /><br>
+					</form>
+					<a href="/restsivu"><input type="submit" value="Tietoja" /></a>
+				</div>
+			</div>
+			<div class="ingame">
+				<h1>Tietoja</h1>
+				<a th:href="@{/hahmo/1}">Päähahmon tiedot</a><br>
+				<a th:href="@{/hahmot}">Kaikki seikkailijat</a><br>
+				<a th:href="@{/ammatit}">Kaikki ammatit</a>
+			</div>
+			<!-- piilotettu elementti pelkästään ulkoasun asettelun vuoksi -->
+			<div>
+				<p style="visibility: hidden;">Nimi</p>
+				<input style="visibility: hidden;" type="submit" value="Lataa peli" />
+			</div>
+		</nav>
+	</div>
+</body>
+
+</html>

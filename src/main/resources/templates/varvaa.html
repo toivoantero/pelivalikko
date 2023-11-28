@@ -1,0 +1,60 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title>Värvää seikkailija</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<link type="text/css" rel="stylesheet" href="/css/muotoilu.css" th:href="@{/css/muotoilu.css}" />
+</head>
+
+<body>
+	<div class="pohja">
+		<nav style="display: flex; flex-direction: row; justify-content: space-between;">
+			<div class="metagame">
+				<div>
+					<form th:action="@{/logout}" method="post">
+						<input type="submit" value="Uusi peli" /><br>
+						<input type="submit" value="Lataa peli" />
+					</form>
+					<a href="/restsivu"><input type="submit" value="Tietoja" /></a>
+				</div>
+			</div>
+			<div class="ingame">
+				<a th:href="@{/varustus}">Seikkailijat</a>
+				<span>|</span>
+				<a sec:authorize="hasAuthority('ADMIN')" href="/varvaa">Värvää seikkailija</a>
+				<span>|</span>
+				<a sec:authorize="hasAuthority('ADMIN')" th:href="@{/muuta}">Muuta seikkailijan identiteetti</a>
+			</div>
+			<!-- piilotettu elementti pelkästään ulkoasun asettelun vuoksi -->
+			<div>
+				<p style="visibility: hidden;">Nimi</p>
+				<input style="visibility: hidden;" type="submit" value="Lataa peli" />
+			</div>
+		</nav>
+
+		<h1>Värvää seikkailija</h1>
+
+		<div id="lomakejaviesti">
+			<form th:object="${hahmo}" th:action="@{tallenna}" action="#" method="post"
+				style="border: 1px solid black; padding: 10px;">
+				<input type="hidden" id="id" th:field="*{id}" />
+
+				<div style="clear: both; display: block; height: 10px;"></div>
+				<label for="ammatit">Ammatti</label>
+				<select id="ammmatit" th:field="*{ammatti}">
+					<option th:each="hillo: ${ammatit}" th:value="${hillo.ammattiid}" th:text="${hillo.nimike}">
+					</option>
+				</select>
+
+				<div style="clear: both; display: block; height: 10px;"></div>
+				<input type="submit" value="Värvää"></input>
+			</form>
+			<div class="vahvistus">
+				<p th:text="${vahvistus}"></p>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>

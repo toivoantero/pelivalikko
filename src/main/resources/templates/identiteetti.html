@@ -1,0 +1,72 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title>Muuta seikkailijan identiteetti</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<link type="text/css" rel="stylesheet" href="/css/muotoilu.css" th:href="@{/css/muotoilu.css}" />
+</head>
+
+<body>
+	<div class="pohja">
+		<nav style="display: flex; flex-direction: row; justify-content: space-between;">
+			<div class="metagame">
+				<div>
+					<form th:action="@{/logout}" method="post">
+						<input type="submit" value="Uusi peli" /><br>
+						<input type="submit" value="Lataa peli" />
+					</form>
+					<a href="/restsivu"><input type="submit" value="Tietoja" /></a>
+				</div>
+			</div>
+			<div class="ingame">
+				<a th:href="@{/varustus}">Seikkailijat</a>
+				<span>|</span>
+				<a sec:authorize="hasAuthority('ADMIN')" href="/varvaa">Värvää seikkailija</a>
+				<span>|</span>
+				<a sec:authorize="hasAuthority('ADMIN')" th:href="@{/muuta}">Muuta seikkailijan identiteetti</a>
+			</div>
+			<!-- piilotettu elementti pelkästään ulkoasun asettelun vuoksi -->
+			<div>
+				<p style="visibility: hidden;">Nimi</p>
+				<input style="visibility: hidden;" type="submit" value="Lataa peli" />
+			</div>
+		</nav>
+
+		<h1>Muuta seikkailijan identiteetti</h1>
+
+		<div id="lomakejaviesti">
+			<div>
+				<form th:each="hahmo : ${hahmot}" th:action="@{../tallenna/{id}(id=${hahmo.id})}" action="#"
+					method="post">
+					<div style="border: 1px solid black; width: 100%; margin: 10px auto; padding: 0 0 20px 0;">
+						<p th:if="${hahmo.id eq 1}" style="text-align: left;"><span
+								sec:authentication="name">Nimi</span>
+						</p>
+						<input type="text" th:unless="${hahmo.id eq 1}" th:value="${hahmo.nimi}" name="nimi" />
+
+						<input type="hidden" th:value="${hahmo.ika}" name="ika" />
+						<input type="hidden" th:value="${hahmo.kokemuspisteet}" name="kokemuspisteet" />
+						<input type="hidden" th:if="${hahmo.ammatti != null}" th:value="${hahmo.ammatti.nimike}"
+							name="nimike" />
+
+						<select th:value="*{hahmo.ammatti}" name="ammatti" required>
+							<option th:each="ammatti: ${ammatit}" th:if="${ammatti != null}"
+								th:value="${ammatti.ammattiid}" th:text="${ammatti.nimike}"
+								th:selected="${ammatti.ammattiid == hahmo.ammatti?.ammattiid}">
+							</option>
+						</select>
+						<br>
+						<button type="submit" style="padding: 5px; margin: 10px 0 0 5px">Tallenna</button>
+					</div>
+				</form>
+			</div>
+			<div class="vahvistus">
+				<p th:text="${vahvistus}"></p>
+			</div>
+		</div>
+	</div>
+
+</body>
+
+</html>

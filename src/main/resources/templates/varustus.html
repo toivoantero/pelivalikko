@@ -1,0 +1,58 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title>Seikkailijat</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<link type="text/css" rel="stylesheet" href="/css/muotoilu.css" th:href="@{/css/muotoilu.css}" />
+</head>
+
+<body>
+	<div class="pohja">
+		<nav style="display: flex; flex-direction: row; justify-content: space-between;">
+			<div class="metagame">
+				<div>
+					<form th:action="@{/logout}" method="post">
+						<input type="submit" value="Uusi peli" /><br>
+						<input type="submit" value="Lataa peli" /><br>
+					</form>
+					<a href="/restsivu"><input type="submit" value="Tietoja" /></a>
+				</div>
+			</div>
+			<div class="ingame">
+				<a th:href="@{/varustus}">Seikkailijat</a>
+				<span>|</span>
+				<a sec:authorize="hasAuthority('ADMIN')" href="/varvaa">Värvää seikkailija</a>
+				<span>|</span>
+				<a sec:authorize="hasAuthority('ADMIN')" href="/muuta">Muuta seikkailijan identiteetti</a>
+			</div>
+			<!-- piilotettu elementti pelkästään ulkoasun asettelun vuoksi -->
+			<div>
+				<p style="visibility: hidden;">Nimi</p>
+				<input style="visibility: hidden;" type="submit" value="Lataa peli" />
+			</div>
+		</nav>
+
+		<h1>Seikkailijat</h1>
+		<div style="width: 100%; text-align: center;">
+			<div class="vahvistus" style="width: 50%; height: 40px; margin:auto; padding: 4px 0 5px 0;">
+				<p th:text="${vahvistus}"></p>
+			</div>
+		</div>
+		<div th:each="hahmo : ${hahmot}">
+			<div style="border: 1px solid black; width: 50%; margin: auto;">
+				<p th:unless="${hahmo.id eq 1}" style="font-weight: bold;" th:text="${hahmo.nimi}"></p>
+				<p th:if="${hahmo.id eq 1}" style="font-weight: bold;"><span sec:authentication="name">Nimi</span>
+				</p>
+				<p th:text="${hahmo.ammatti.nimike}"></p>
+				<p th:text="${hahmo.ika + ' vuotta'}"></p>
+				<p th:text="${hahmo.kokemuspisteet + ' kokemuspistettä'}"></p>
+				<hr th:unless="${hahmo.id eq 1}">
+				<p sec:authorize="hasAuthority('ADMIN')"><a th:unless="${hahmo.id eq 1}"
+						th:href="@{/poista/{id}(id=${hahmo.id})}">Irtisano seikkailija pois ryhmästä</a></p>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>
